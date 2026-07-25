@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ma-bg: #f4f9fb;
+  --color-ma-primary: #24478b;
+  --color-ma-primary-dark: #1c376d;
+  --color-ma-separator: #95adbc;
+  --color-ma-text: #1d2630;
+  --color-ma-muted: #607482;
+  --color-ma-light: #edf5f9;
+  --color-ma-danger: #a33b2b;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #f4f9fb;
+  color: #1d2630;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.ma-hero-parallax {
+  background-attachment: fixed;
+  animation: ma-hero-drift 18s ease-in-out infinite alternate;
+}
+
+.ma-reveal {
+  animation: ma-reveal-up 720ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.ma-reveal-delay {
+  animation-delay: 140ms;
+}
+
+.ma-parallax-panel {
+  transform: translateZ(0);
+}
+
+.ma-grid-texture {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 44px 44px;
+  animation: ma-grid-shift 14s linear infinite;
+}
+
+@keyframes ma-reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ma-hero-drift {
+  from {
+    background-position: center 46%;
+  }
+
+  to {
+    background-position: center 54%;
+  }
+}
+
+@keyframes ma-grid-shift {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 44px 44px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ma-hero-parallax {
+    background-attachment: scroll;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .ma-hero-parallax {
+    background-attachment: scroll;
+  }
+}
