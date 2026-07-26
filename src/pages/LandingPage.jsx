@@ -632,9 +632,9 @@ function Contact() {
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.8rem' }}>
               {[
-                { label: 'Adresse', value: '1000, rue De La Gauchetière O., Bureau 2400\nMontréal, QC H3B 4W5' },
-                { label: 'Téléphone', value: '+1 (514) 555-0198' },
-                { label: 'Courriel', value: 'info@adamcpa.ca' },
+                { label: 'Adresse', value: '69 Rue Gauthier N, Joliette, QC J6E 1T7, Canada' },
+                { label: 'Téléphone', value: '+1 450-752-2559' },
+                { label: 'Courriel', value: 'gabriel@adamcowen.com' },
                 { label: 'Heures', value: 'Lun–Ven : 8h30 – 17h30\nSamedi sur rendez-vous' },
               ].map(item => (
                 <div key={item.label}>
