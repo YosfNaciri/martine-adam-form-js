@@ -9,12 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fillout/react": "^3.0.0",
     "@supabase/supabase-js": "^2.110.2",
     "@tailwindcss/vite": "latest",
     "@vitejs/plugin-react": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "react-router-dom": "latest",
+    "react-router-dom": "^7.11.0",
     "tailwindcss": "latest",
     "typescript": "latest",
     "vite": "latest"

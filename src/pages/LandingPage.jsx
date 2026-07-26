@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 
 // ─── Parallax hook ────────────────────────────────────────────────────────────
 function useParallax(speed = 0.4) {
@@ -39,7 +40,12 @@ function Nav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const links = ['Services', 'À propos', 'Équipe', 'Contact']
+  const links = [
+    { label: 'Services', href: '#services' },
+    { label: 'À propos', href: '#apropos' },
+    { label: 'Equipe', href: '#equipe' },
+    { label: 'FAQ', to: '/faq' },
+  ]
 
   return (
     <header style={{
@@ -59,7 +65,7 @@ function Nav() {
             </svg>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
-            <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.1rem', fontWeight: 700, color: scrolled ? '#1C1917' : '#FAF8F5', transition: 'color 0.4s', letterSpacing: '-0.01em' }}>Adam CPA</span>
+            <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.1rem', fontWeight: 700, color: scrolled ? '#1C1917' : '#FAF8F5', transition: 'color 0.4s', letterSpacing: '-0.01em' }}>Martine Adam CPA</span>
             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.6rem', fontWeight: 400, color: '#C4A882', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Cabinet comptable</span>
           </div>
         </a>
@@ -67,16 +73,24 @@ function Nav() {
         {/* Desktop nav */}
         <nav style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }} className="desktop-nav">
           {links.map(link => (
-            <a key={link} href={`#${link.toLowerCase().replace(' ', '-').replace('à', 'a')}`}
-              style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.84rem', fontWeight: 400, color: scrolled ? '#1C1917' : 'rgba(250,248,245,0.85)', textDecoration: 'none', letterSpacing: '0.03em', transition: 'color 0.2s' }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#C4A882')}
-              onMouseLeave={e => (e.currentTarget.style.color = scrolled ? '#1C1917' : 'rgba(250,248,245,0.85)')}
-            >{link}</a>
+            link.to ? (
+              <Link key={link.label} to={link.to}
+                style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.84rem', fontWeight: 400, color: scrolled ? '#1C1917' : 'rgba(250,248,245,0.85)', textDecoration: 'none', letterSpacing: '0.03em', transition: 'color 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#C4A882')}
+                onMouseLeave={e => (e.currentTarget.style.color = scrolled ? '#1C1917' : 'rgba(250,248,245,0.85)')}
+              >{link.label}</Link>
+            ) : (
+              <a key={link.label} href={link.href}
+                style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.84rem', fontWeight: 400, color: scrolled ? '#1C1917' : 'rgba(250,248,245,0.85)', textDecoration: 'none', letterSpacing: '0.03em', transition: 'color 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#C4A882')}
+                onMouseLeave={e => (e.currentTarget.style.color = scrolled ? '#1C1917' : 'rgba(250,248,245,0.85)')}
+              >{link.label}</a>
+            )
           ))}
-          <a href="#contact" style={{ padding: '0.55rem 1.4rem', background: '#1E3A2F', color: '#FAF8F5', fontFamily: "'Inter', sans-serif", fontSize: '0.82rem', fontWeight: 500, letterSpacing: '0.05em', textDecoration: 'none', borderRadius: 2, transition: 'background 0.2s' }}
+          <Link to="/nous-rejoindre" style={{ padding: '0.55rem 1.4rem', background: '#1E3A2F', color: '#FAF8F5', fontFamily: "'Inter', sans-serif", fontSize: '0.82rem', fontWeight: 500, letterSpacing: '0.05em', textDecoration: 'none', borderRadius: 2, transition: 'background 0.2s' }}
             onMouseEnter={e => (e.currentTarget.style.background = '#2A5040')}
             onMouseLeave={e => (e.currentTarget.style.background = '#1E3A2F')}
-          >Consultation gratuite</a>
+          >Nous rejoindre</Link>
         </nav>
 
         {/* Mobile burger */}
@@ -93,12 +107,30 @@ function Nav() {
       {/* Mobile menu */}
       <div style={{ overflow: 'hidden', maxHeight: menuOpen ? 300 : 0, transition: 'max-height 0.4s ease', background: 'rgba(250,248,245,0.97)', backdropFilter: 'blur(12px)' }}>
         <div style={{ padding: '1rem 2rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-          {[...links, 'Consultation gratuite'].map(link => (
-            <a key={link} href={`#${link.toLowerCase().replace(/ /g, '-').replace('à', 'a')}`}
-              onClick={() => setMenuOpen(false)}
-              style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.95rem', color: '#1C1917', textDecoration: 'none' }}
-            >{link}</a>
+          {links.map(link => (
+            link.to ? (
+              <Link
+                key={link.label}
+                to={link.to}
+                onClick={() => setMenuOpen(false)}
+                style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.95rem', color: '#1C1917', textDecoration: 'none' }}
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <a key={link.label} href={link.href}
+                onClick={() => setMenuOpen(false)}
+                style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.95rem', color: '#1C1917', textDecoration: 'none' }}
+              >{link.label}</a>
+            )
           ))}
+          <Link
+            to="/nous-rejoindre"
+            onClick={() => setMenuOpen(false)}
+            style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.95rem', color: '#1E3A2F', fontWeight: 700, textDecoration: 'none' }}
+          >
+            Nous rejoindre
+          </Link>
         </div>
       </div>
       <style>{`
@@ -146,19 +178,19 @@ function Hero() {
               La rigueur au service<br />de votre <em style={{ fontStyle: 'italic', color: '#C4A882' }}>réussite.</em>
             </h1>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)', fontWeight: 300, color: 'rgba(250,248,245,0.78)', lineHeight: 1.8, maxWidth: 500, marginBottom: '2.5rem' }}>
-              Comptabilité, fiscalité et conseil stratégique pour les entreprises et particuliers du Québec. Un accompagnement personnalisé, des résultats concrets.
+              Comptabilité, fiscalité et conseil stratégique pour les entreprises et particuliers. Un accompagnement personnalisé, des résultats concrets.
             </p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <a href="#contact"
+              <Link   to="/nous-rejoindre"
                 style={{ padding: '0.85rem 2rem', background: '#C4A882', color: '#1C1917', fontFamily: "'Inter', sans-serif", fontSize: '0.83rem', fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', textDecoration: 'none', borderRadius: 2, transition: 'background 0.25s, transform 0.25s', display: 'inline-block' }}
                 onMouseEnter={e => { e.currentTarget.style.background = '#D4B892'; e.currentTarget.style.transform = 'translateY(-2px)' }}
                 onMouseLeave={e => { e.currentTarget.style.background = '#C4A882'; e.currentTarget.style.transform = 'none' }}
-              >Consultation gratuite</a>
-              <a href="#services"
+              >Nous rejoindre </Link>
+                <Link   to="/impots"
                 style={{ padding: '0.85rem 2rem', border: '1px solid rgba(250,248,245,0.35)', color: '#FAF8F5', fontFamily: "'Inter', sans-serif", fontSize: '0.83rem', fontWeight: 400, letterSpacing: '0.05em', textDecoration: 'none', borderRadius: 2, transition: 'border-color 0.25s, transform 0.25s', display: 'inline-block' }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(250,248,245,0.75)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(250,248,245,0.35)'; e.currentTarget.style.transform = 'none' }}
-              >Nos services</a>
+              >Impôts 2025</Link>
             </div>
           </div>
         </div>
@@ -321,7 +353,7 @@ function Services() {
             </h2>
           </div>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.92rem', fontWeight: 300, color: '#78716C', lineHeight: 1.82, opacity: visible ? 1 : 0, transform: visible ? 'none' : 'translateY(18px)', transition: 'opacity 0.6s 0.15s, transform 0.6s 0.15s', margin: 0 }}>
-            De la tenue de livres à la planification stratégique, Adam CPA offre une gamme complète de services comptables adaptés à la réalité des PME québécoises et des particuliers.
+            De la tenue de livres à la planification stratégique, Martine Adam CPA offre une gamme complète de services comptables adaptés à la réalité des PME québécoises et des particuliers.
           </p>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.2rem' }}>
@@ -339,7 +371,7 @@ function About() {
   const imgParallax = useParallax(0.12)
 
   return (
-    <section id="a-propos" style={{ padding: 'clamp(5rem, 10vw, 9rem) 2rem', background: '#FAF8F5' }}>
+    <section id="apropos" style={{ padding: 'clamp(5rem, 10vw, 9rem) 2rem', background: '#FAF8F5' }}>
       <div ref={ref} style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(3rem, 8vw, 7rem)', alignItems: 'center' }}>
         <div style={{ opacity: visible ? 1 : 0, transform: visible ? 'none' : 'translateX(-28px)', transition: 'opacity 0.8s, transform 0.8s' }}>
           <span style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.68rem', fontWeight: 500, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#C4A882', marginBottom: '1.2rem' }}>À propos du cabinet</span>
@@ -347,14 +379,16 @@ function About() {
             Plus qu'un comptable,<br /><em>un partenaire de confiance</em>
           </h2>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.95rem', fontWeight: 300, color: '#78716C', lineHeight: 1.85, marginBottom: '1.2rem' }}>
-            Fondé par Martine Adam, CPA, CGA, le cabinet accompagne depuis plus de 25 ans des entrepreneurs, PME et particuliers dans la gestion de leur santé financière. Notre approche est simple : comprendre votre réalité avant de proposer des solutions.
+            Pour mieux vous servir et protéger vos informations personnelles, nous avons modernisé notre processus de préparation d’impôts.
           </p>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.95rem', fontWeight: 300, color: '#78716C', lineHeight: 1.85, marginBottom: '2.5rem' }}>
-            Basé à Montréal et desservant l'ensemble du Québec, notre cabinet allie rigueur professionnelle et accessibilité humaine pour vous offrir un service de qualité institutionnelle à l'échelle humaine.
+            Nos anciens clients peuvent choisir entre le portail ou le format papier, sans frais supplémentaires. Nous nous adaptons à vous.
+          </p>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.95rem', fontWeight: 300, color: '#78716C', lineHeight: 1.85, marginBottom: '2.5rem' }}>
+Notre objectif est simple : vous offrir une expérience plus fluide, sécurisée et adaptée à vos besoins.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
             {[
-              'Membre de l\'Ordre des CPA du Québec',
               'Cabinet agréé pour l\'audit et la certification',
               'Service en français et en anglais',
               'Disponibilité année-round, pas seulement en saison',
@@ -372,20 +406,20 @@ function About() {
         <div style={{ opacity: visible ? 1 : 0, transform: visible ? 'none' : 'translateX(28px)', transition: 'opacity 0.8s 0.2s, transform 0.8s 0.2s', position: 'relative' }}>
           <div style={{ position: 'relative', paddingTop: '120%', borderRadius: 3, overflow: 'hidden', background: '#EAE6DF' }}>
             <img
-              src="https://images.unsplash.com/photo-1556761175-4b46a572b786?w=700&h=880&fit=crop&auto=format"
+              src="https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlzt7dzKtguyOULJRTaA5Tk8c4NXdky_ffmv42UzAvyz8zH5F50bMXAWbzmZRNMyPkPnfRoCuHqbrde_N1CBqKnsrD_ivyeqB1NtUrBnJ9y9x68vvNH2IqFCv1vHh0ap3RjbgatWg=s1360-w1360-h1020-rw"
               alt="Martine Adam CPA"
               style={{ position: 'absolute', inset: 0, width: '100%', height: '115%', objectFit: 'cover', objectPosition: 'center top', transform: `translateY(${imgParallax * 0.3}px)` }}
             />
             {/* Overlay badge */}
             <div style={{ position: 'absolute', bottom: 24, left: 24, background: 'rgba(30,58,47,0.92)', backdropFilter: 'blur(8px)', borderRadius: 3, padding: '1rem 1.2rem' }}>
               <div style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.1rem', fontWeight: 700, color: '#FAF8F5' }}>Martine Adam</div>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.72rem', color: '#C4A882', letterSpacing: '0.1em', marginTop: 2 }}>CPA, CGA · Associée fondatrice</div>
+              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.72rem', color: '#C4A882', letterSpacing: '0.1em', marginTop: 2 }}>CPA, CGA</div>
             </div>
           </div>
           <div style={{ position: 'absolute', bottom: -20, right: -20, width: 160, height: 160, border: '1px solid #C4A882', borderRadius: 3, zIndex: -1, opacity: 0.4 }} />
         </div>
       </div>
-      <style>{`@media(max-width:768px){#a-propos>div{grid-template-columns:1fr!important}}`}</style>
+      <style>{`@media(max-width:768px){#approche>div{grid-template-columns:1fr!important}}`}</style>
     </section>
   )
 }
@@ -404,10 +438,10 @@ function QuoteSection() {
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(15,22,18,0.78)' }} />
       </div>
       <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', maxWidth: 740, padding: '0 2rem' }}>
-        <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.4rem, 3.5vw, 2.2rem)', fontStyle: 'italic', fontWeight: 400, color: '#FAF8F5', lineHeight: 1.45, margin: '0 0 1.4rem', letterSpacing: '-0.01em' }}>
+        <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.4rem, 3.5vw, 2.2rem)', fontStyle: 'italic', fontWeight: 400, color: '#1C1917', lineHeight: 1.45, margin: '0 0 1.4rem', letterSpacing: '-0.01em' }}>
           "Un bon comptable ne se contente pas de regarder dans le rétroviseur. Il vous aide à voir la route devant vous."
         </p>
-        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 400, letterSpacing: '0.18em', color: '#C4A882', textTransform: 'uppercase' }}>— Martine Adam, CPA</span>
+        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 400, letterSpacing: '0.18em', color: '#1C1917', textTransform: 'uppercase' }}>— Martine Adam, CPA</span>
       </div>
     </section>
   )
@@ -416,22 +450,22 @@ function QuoteSection() {
 // ─── Team ─────────────────────────────────────────────────────────────────────
 const team = [
   {
-    name: 'Martine Adam',
-    title: 'CPA, CGA — Associée fondatrice',
+    name: 'Gabriel Surprenant',
+    title: 'CPA, CA — Associé principal',
     spec: 'Fiscalité corporative & planification',
-    img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&h=600&fit=crop&auto=format',
+    img: 'https://www.gsstrategies.ca/wp-content/uploads/2023/06/Pinpoint_I2A5832-440x550.jpg',
   },
   {
-    name: 'François Leblanc',
+    name: 'Gabriel Surprenant',
     title: 'CPA, CA — Associé principal',
     spec: 'Audit, certification & financement',
-    img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&h=600&fit=crop&auto=format',
+    img: 'https://www.gsstrategies.ca/wp-content/uploads/2023/06/Pinpoint_I2A5832-440x550.jpg',
   },
   {
-    name: 'Sophie Marchand',
-    title: 'CPA — Directrice, Services-conseils',
+    name: 'Gabriel Surprenant',
+    title: 'CPA, CA — Associé principal',
     spec: 'PME, démarrage & restructuration',
-    img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&h=600&fit=crop&auto=format',
+    img: 'https://www.gsstrategies.ca/wp-content/uploads/2023/06/Pinpoint_I2A5832-440x550.jpg',
   },
 ]
 
@@ -457,7 +491,7 @@ function TeamMember({ m, i }) {
 function Team() {
   const { ref, visible } = useReveal(0.05)
   return (
-    <section id="équipe" style={{ padding: 'clamp(5rem, 10vw, 9rem) 2rem', background: '#EAE6DF' }}>
+    <section id="equipe" style={{ padding: 'clamp(5rem, 10vw, 9rem) 2rem', background: '#EAE6DF' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div ref={ref} style={{ textAlign: 'center', marginBottom: '3.5rem', opacity: visible ? 1 : 0, transform: visible ? 'none' : 'translateY(18px)', transition: 'opacity 0.6s, transform 0.6s' }}>
           <span style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.68rem', fontWeight: 500, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#C4A882', marginBottom: '1rem' }}>Notre équipe</span>
@@ -466,10 +500,10 @@ function Team() {
           </h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2.5rem' }}>
-          {team.map((m, i) => <TeamMember key={m.name} m={m} i={i} />)}
+          {team.map((m, i) => <TeamMember key={i} m={m} i={i} />)}
         </div>
       </div>
-      <style>{`@media(max-width:768px){#équipe .team-grid{grid-template-columns:1fr!important}}`}</style>
+      <style>{`@media(max-width:768px){#processus .team-grid{grid-template-columns:1fr!important}}`}</style>
     </section>
   )
 }
@@ -477,7 +511,7 @@ function Team() {
 // ─── Testimonials ─────────────────────────────────────────────────────────────
 const testimonials = [
   {
-    quote: "Adam CPA nous accompagne depuis l'incorporation de notre entreprise. Grâce à leur planification fiscale, nous avons économisé des dizaines de milliers de dollars en impôts légalement. Un partenaire essentiel.",
+    quote: "Martine Adam CPA nous accompagne depuis l'incorporation de notre entreprise. Grâce à leur planification fiscale, nous avons économisé des dizaines de milliers de dollars en impôts légalement. Un partenaire essentiel.",
     name: 'Jean-Pierre Dubois',
     role: 'Président, Groupe Dubois Construction',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&auto=format',
@@ -691,25 +725,38 @@ function Footer() {
           <div style={{ width: 28, height: 28, background: '#1E3A2F', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
               <path d="M3 14L9 4L15 14H3Z" fill="none" stroke="#C4A882" strokeWidth="1.5" strokeLinejoin="round"/>
+              <line x1="5" y1="11" x2="13" y2="11" stroke="#C4A882" strokeWidth="1"/>
             </svg>
           </div>
           <div>
-            <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '1rem', fontWeight: 700, color: '#FAF8F5' }}>Adam CPA</span>
+            <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '1rem', fontWeight: 700, color: '#FAF8F5' }}>Martine Adam CPA</span>
             <span style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.62rem', color: '#78716C', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Cabinet comptable · Montréal</span>
           </div>
         </div>
         <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-          {['Services', 'À propos', 'Équipe', 'Contact'].map(link => (
-            <a key={link} href={`#${link.toLowerCase().replace(' ', '-').replace('à', 'a')}`}
+          {[
+            ['Services', '#services'],
+            ['À propos', '#apropos'],
+            ['Equipe', '#equipe'],
+            ['FAQ', '/faq'],
+          ].map(([label, href]) => (
+            href.startsWith("/") ? (
+              <Link key={label} to={href}
+                style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.78rem', color: '#78716C', textDecoration: 'none', transition: 'color 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#C4A882')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#78716C')}
+              >{label}</Link>
+            ) : (
+              <a key={label} href={href}
               style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.78rem', color: '#78716C', textDecoration: 'none', transition: 'color 0.2s' }}
               onMouseEnter={e => (e.currentTarget.style.color = '#C4A882')}
               onMouseLeave={e => (e.currentTarget.style.color = '#78716C')}
-            >{link}</a>
+              >{label}</a>
+            )
           ))}
         </div>
         <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.72rem', color: '#4A4540', textAlign: 'right' }}>
-          <div>© {new Date().getFullYear()} Adam CPA. Tous droits réservés.</div>
-          <div style={{ marginTop: 2 }}>Membre de l'Ordre des CPA du Québec</div>
+          <div>© {new Date().getFullYear()} Martine Adam CPAAdam CPA. Tous droits réservés.</div>
         </div>
       </div>
     </footer>

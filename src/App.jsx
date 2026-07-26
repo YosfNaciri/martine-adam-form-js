@@ -1,6 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
+import FaqPage from "./pages/FaqPage";
 import IntakePage from "./pages/IntakePage";
+import ImpotsPage from "./pages/ImpotsPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminSubmissionsPage from "./pages/AdminSubmissionsPage";
@@ -11,6 +13,8 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/faq" element={<FaqPage />} />
+      <Route path="/impots" element={<ImpotsPage />} />
       <Route path="/nous-rejoindre" element={<IntakePage />} />
       <Route path="/admin/login" element={<AdminLoginPage />} />
 

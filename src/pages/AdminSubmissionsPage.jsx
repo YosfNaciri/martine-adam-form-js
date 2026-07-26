@@ -690,7 +690,7 @@ export default function AdminSubmissionsPage() {
                   </p>
                 </div>
 
-                <div className="min-w-[220px]">
+                <div className="min-w-55">
                   <label className="mb-2 block text-sm font-bold">
                     Statut du dossier
                   </label>
@@ -1264,11 +1264,11 @@ function InfoItem({ label, value, sensitive = false }) {
 
   return (
     <div className="rounded-2xl border border-ma-separator/55 bg-white p-4 shadow-[0_8px_20px_rgba(36,71,139,0.04)]">
-      <div className="mb-1 text-xs font-bold uppercase tracking-[0.1em] text-ma-muted">
+      <div className="mb-1 text-xs font-bold uppercase tracking-widest text-ma-muted">
         {label}
       </div>
 
-      <div className="whitespace-pre-wrap break-words text-sm font-semibold text-ma-text">
+      <div className="whitespace-pre-wrap wrap-break-word text-sm font-semibold text-ma-text">
         {sensitive && displayValue !== "—" ? (
           <span className="text-ma-danger">{displayValue}</span>
         ) : (
