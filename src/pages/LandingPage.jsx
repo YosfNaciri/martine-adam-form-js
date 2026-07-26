@@ -345,7 +345,7 @@ function Services() {
   return (
     <section id="services" style={{ padding: 'clamp(5rem, 10vw, 9rem) 2rem', background: '#EAE6DF' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-        <div ref={ref} style={{ marginBottom: '3.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'end' }}>
+        <div ref={ref} className="hdr-grid" style={{ marginBottom: '3.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'end' }}>
           <div style={{ opacity: visible ? 1 : 0, transform: visible ? 'none' : 'translateY(18px)', transition: 'opacity 0.6s, transform 0.6s' }}>
             <span style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.68rem', fontWeight: 500, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#C4A882', marginBottom: '1rem' }}>Expertise</span>
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, color: '#1C1917', lineHeight: 1.12, letterSpacing: '-0.02em', margin: 0 }}>
@@ -356,11 +356,23 @@ function Services() {
             De la tenue de livres à la planification stratégique, Martine Adam CPA offre une gamme complète de services comptables adaptés à la réalité des PME québécoises et des particuliers.
           </p>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.2rem' }}>
+        <div className="svc-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.2rem' }}>
           {services.map((s, i) => <ServiceCard key={s.num} s={s} i={i} />)}
         </div>
+        <div className="services-partner" style={{ marginTop: '1.2rem', padding: 'clamp(1.6rem, 4vw, 2.4rem)', background: '#1E3A2F', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '2rem', opacity: visible ? 1 : 0, transform: visible ? 'none' : 'translateY(18px)', transition: 'opacity 0.6s 0.25s, transform 0.6s 0.25s' }}>
+          <div>
+            <span style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.66rem', fontWeight: 500, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C4A882', marginBottom: '0.65rem' }}>Cabinet partenaire</span>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.35rem, 2.5vw, 1.75rem)', fontWeight: 600, color: '#FAF8F5', lineHeight: 1.25, margin: '0 0 0.55rem' }}>Besoin d'autres services spécialisés&nbsp;?</h3>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.88rem', fontWeight: 300, color: 'rgba(250,248,245,0.68)', lineHeight: 1.7, margin: 0 }}>
+              Découvrez l’ensemble des services complémentaires offerts par notre cabinet partenaire.
+            </p>
+          </div>
+          <a href="https://adamcowen.com/" target="_blank" rel="noopener noreferrer" aria-label="Découvrir les services d’AdamCowen (nouvel onglet)" style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: '0.8rem', fontFamily: "'Inter', sans-serif", fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', color: '#1E3A2F', background: '#C4A882', padding: '0.9rem 1.2rem', borderRadius: 2, textDecoration: 'none' }}>
+            AdamCowen <span aria-hidden="true" style={{ fontSize: '1rem' }}>↗</span>
+          </a>
+        </div>
       </div>
-      <style>{`@media(max-width:900px){#services .svc-grid{grid-template-columns:1fr!important}#services .hdr-grid{grid-template-columns:1fr!important}}`}</style>
+      <style>{`@media(max-width:900px){#services .svc-grid{grid-template-columns:1fr!important}#services .hdr-grid{grid-template-columns:1fr!important}}@media(max-width:640px){#services .services-partner{align-items:flex-start!important;flex-direction:column!important}#services .services-partner a{width:100%;justify-content:center;box-sizing:border-box}}`}</style>
     </section>
   )
 }
