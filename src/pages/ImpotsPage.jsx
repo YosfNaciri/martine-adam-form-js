@@ -214,7 +214,7 @@ Notre objectif est simple : vous offrir une expérience plus fluide, sécurisée
                 <a>Télécharger le guide pratique et aide-mémoire d'impôt</a>
               </button>
             </div>
-            <div className="mt-8 rounded-[4px] border border-[#C4A882]/35 bg-white/70 ">
+            <div className="mt-8 rounded-sm border border-[#C4A882]/35 bg-white/70 ">
 
             </div>
           </div>

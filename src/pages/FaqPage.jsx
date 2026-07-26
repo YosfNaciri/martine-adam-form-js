@@ -202,7 +202,7 @@ export default function FaqPage() {
             <p className="mt-6 text-lg leading-8 text-[#78716C]">
               Consultez les questions les plus courantes par profil client et découvrez comment notre cabinet de CPA à Joliette et en ligne peut vous aider.
             </p>
-            <div className="mt-8 rounded-[4px] border border-[#C4A882]/35 bg-white/70 ">
+            <div className="mt-8 rounded-sm border border-[#C4A882]/35 bg-white/70 ">
 
             </div>
           </div>
@@ -215,7 +215,7 @@ export default function FaqPage() {
               {sections.map((section) => (
                 <section key={section.id} id={section.id}>
                   <div className="mb-4 flex items-center gap-3">
-                    <span className="grid h-11 w-11 place-items-center rounded-[4px]  text-xl">
+                    <span className="grid h-11 w-11 place-items-center rounded-sm  text-xl">
                       {section.emoji}
                     </span>
                     <h2 className="font-serif text-2xl font-bold text-[#1C1917]">
@@ -223,7 +223,7 @@ export default function FaqPage() {
                     </h2>
                   </div>
 
-                  <div className="divide-y divide-[#C4A882]/25 overflow-hidden rounded-[6px] border border-[#C4A882]/35 bg-white shadow-[0_14px_36px_rgba(30,58,47,0.06)]">
+                  <div className="divide-y divide-[#C4A882]/25 overflow-hidden rounded-md border border-[#C4A882]/35 bg-white shadow-[0_14px_36px_rgba(30,58,47,0.06)]">
                     {section.items.map((item) => (
                       <details key={item.id} className="group p-5 open:bg-[#FAF8F5]">
                         <summary className="flex cursor-pointer list-none items-start justify-between gap-5 font-bold text-[#1C1917]">
@@ -248,7 +248,7 @@ export default function FaqPage() {
                           )}
 
                           {item.note && (
-                            <p className="mt-4 rounded-[4px] border-l-4 border-[#C4A882] bg-white px-4 py-3 font-semibold text-[#1E3A2F]">
+                            <p className="mt-4 rounded-sm border-l-4 border-[#C4A882] bg-white px-4 py-3 font-semibold text-[#1E3A2F]">
                               {item.note}
                             </p>
                           )}

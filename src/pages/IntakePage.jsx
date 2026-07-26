@@ -269,7 +269,7 @@ export default function IntakePage() {
     const updateRepeatRow = (key, index, field, value) => setRepeats((prev) => ({ ...prev, [key]: prev[key].map((row, i) => (i === index ? { ...row, [field]: value } : row)) }));
     const current = steps[currentStep];
     return (<div className="ma-form-theme flex min-h-screen flex-col bg-[radial-gradient(circle_at_top_right,rgba(196,168,130,0.22),transparent_32%),linear-gradient(180deg,#ffffff_0%,#FAF8F5_100%)] text-ma-text lg:flex-row">
-      <aside className="relative h-auto w-full shrink-0 overflow-y-auto border-r border-ma-separator bg-gradient-to-b from-ma-primary to-ma-primary-dark p-6 text-white lg:sticky lg:top-0 lg:h-screen lg:w-[300px] lg:p-9">
+      <aside className="relative h-auto w-full shrink-0 overflow-y-auto border-r border-ma-separator bg-linear-to-b from-ma-primary to-ma-primary-dark p-6 text-white lg:sticky lg:top-0 lg:h-screen lg:w-75 lg:p-9">
         <Link to="/" className="mb-1 block text-2xl font-extrabold">Martine Adam CPA</Link>
         <div className="mb-10 text-[11px] uppercase tracking-[0.16em] text-white/80">Ouverture de dossier client</div>
         <ul className="flex flex-wrap gap-0 lg:block">
@@ -288,7 +288,7 @@ export default function IntakePage() {
       <main className="flex flex-1 justify-center px-4 py-8 lg:px-10 lg:py-14">
         <div className="w-full max-w-180 rounded-[22px] border border-ma-separator/55 bg-white/80 p-5 shadow-[0_18px_45px_rgba(30,58,47,0.08)] backdrop-blur lg:p-9">
           <div className="mb-3 flex items-center gap-3">
-            <div className="relative h-1 flex-1 overflow-hidden rounded-full bg-ma-separator/45"><div className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-ma-primary to-ma-primary-dark transition-all" style={{ width: `${progress}%` }}/></div>
+            <div className="relative h-1 flex-1 overflow-hidden rounded-full bg-ma-separator/45"><div className="absolute left-0 top-0 h-full rounded-full bg-linear-to-r from-ma-primary to-ma-primary-dark transition-all" style={{ width: `${progress}%` }}/></div>
             <div className="whitespace-nowrap font-mono text-xs text-ma-muted">Étape {currentStep + 1} / {steps.length}</div>
           </div>
 
