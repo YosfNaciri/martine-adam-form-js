@@ -181,12 +181,6 @@ function Hero() {
                 La rigueur au service de votre <em style={{ fontStyle: 'italic', color: '#C4A882' }}>réussite.</em>
               </h1>
             </div>
-
-      
-
-            
-            
-       
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)', fontWeight: 300, color: 'rgba(250,248,245,0.78)', lineHeight: 1.8, maxWidth: 500, marginBottom: '2.5rem' }}>
               Comptabilité, fiscalité et conseil stratégique pour les entreprises et particuliers. Un accompagnement personnalisé, des résultats concrets.
             </p>
@@ -374,11 +368,11 @@ function Services() {
             <span style={{ display: 'block', fontFamily: "'Inter', sans-serif", fontSize: '0.66rem', fontWeight: 500, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C4A882', marginBottom: '0.65rem' }}>Cabinet partenaire</span>
             <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.35rem, 2.5vw, 1.75rem)', fontWeight: 600, color: '#FAF8F5', lineHeight: 1.25, margin: '0 0 0.55rem' }}>Besoin d'autres services spécialisés&nbsp;?</h3>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.88rem', fontWeight: 300, color: 'rgba(250,248,245,0.68)', lineHeight: 1.7, margin: 0 }}>
-              Découvrez l’ensemble des services complémentaires offerts par notre cabinet partenaire.
+              Découvrez l’ensemble des services complémentaires offerts sur notre site web.
             </p>
           </div>
           <a href="https://adamcowen.com/" target="_blank" rel="noopener noreferrer" aria-label="Découvrir les services d’AdamCowen (nouvel onglet)" style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: '0.8rem', fontFamily: "'Inter', sans-serif", fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', color: '#1E3A2F', background: '#C4A882', padding: '0.9rem 1.2rem', borderRadius: 2, textDecoration: 'none' }}>
-            AdamCowen <span aria-hidden="true" style={{ fontSize: '1rem' }}>↗</span>
+            Visiter notre site web <span aria-hidden="true" style={{ fontSize: '1rem' }}>↗</span>
           </a>
         </div>
       </div>
