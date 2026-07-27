@@ -170,13 +170,23 @@ function Hero() {
       <div style={{ position: 'relative', zIndex: 2, maxWidth: 1200, margin: '0 auto', padding: '0 2rem', width: '100%' }}>
         <div style={{ maxWidth: 700 }}>
           <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? 'none' : 'translateY(28px)', transition: 'opacity 0.9s ease, transform 0.9s ease' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.8rem' }}>
+            
+            <div style={{ marginBottom: '1.8rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
               <div style={{ width: 32, height: 1, background: '#C4A882' }} />
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#C4A882' }}>CPA · Expert-comptable agréé</span>
             </div>
-            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2.8rem, 6.5vw, 5rem)', fontWeight: 700, color: '#FAF8F5', lineHeight: 1.08, letterSpacing: '-0.02em', margin: '0 0 1.5rem' }}>
-              La rigueur au service<br />de votre <em style={{ fontStyle: 'italic', color: '#C4A882' }}>réussite.</em>
-            </h1>
+              <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2.8rem, 6.5vw, 5rem)', fontWeight: 700, color: '#FAF8F5', lineHeight: 1.08, letterSpacing: '-0.02em', margin: '0 0 1.5rem' }}>
+                Martine Adam CPA.<br /> 
+                La rigueur au service de votre <em style={{ fontStyle: 'italic', color: '#C4A882' }}>réussite.</em>
+              </h1>
+            </div>
+
+      
+
+            
+            
+       
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)', fontWeight: 300, color: 'rgba(250,248,245,0.78)', lineHeight: 1.8, maxWidth: 500, marginBottom: '2.5rem' }}>
               Comptabilité, fiscalité et conseil stratégique pour les entreprises et particuliers. Un accompagnement personnalisé, des résultats concrets.
             </p>
