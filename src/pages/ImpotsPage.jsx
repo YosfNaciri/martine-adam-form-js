@@ -183,7 +183,7 @@ export default function ImpotsPage() {
               Accueil
             </Link>
             <Link
-              to="/nous-rejoindre"
+              to="/demande-acces"
               className="rounded-[3px] bg-[#1E3A2F] px-4 py-2 text-[#FAF8F5] hover:bg-[#2A5040]"
             >
               Nous rejoindre

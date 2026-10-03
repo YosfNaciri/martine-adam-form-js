@@ -100,6 +100,7 @@ const VOLUME_LABELS = {
 };
 
 const DOCUMENT_LABELS = {
+  form_response_excel: "Réponse du formulaire (Excel)",
   piece_identite: "Pièce d’identité",
   lettre_mission: "Lettre de mission signée",
   certificat_deces: "Certificat de décès",
@@ -315,6 +316,87 @@ function downloadBlob(blob, filename) {
   URL.revokeObjectURL(url);
 }
 
+function escapeXml(value) {
+  return String(value)
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+function getExcelColumnName(index) {
+  let name = "";
+  let value = index + 1;
+
+  while (value > 0) {
+    const remainder = (value - 1) % 26;
+    name = String.fromCharCode(65 + remainder) + name;
+    value = Math.floor((value - 1) / 26);
+  }
+
+  return name;
+}
+
+function createExcelWorkbook(rows) {
+  const encoder = new TextEncoder();
+  const headers = rows.length > 0 ? Object.keys(rows[0]) : [];
+  const values = [headers, ...rows.map((row) => headers.map((key) => row[key]))];
+  const sheetRows = values
+    .map((row, rowIndex) => {
+      const cells = row
+        .map((value, columnIndex) => {
+          const reference = `${getExcelColumnName(columnIndex)}${rowIndex + 1}`;
+          const style = rowIndex === 0 ? ' s="1"' : "";
+
+          if (typeof value === "boolean") {
+            return `<c r="${reference}" t="b"${style}><v>${value ? 1 : 0}</v></c>`;
+          }
+
+          if (typeof value === "number" && Number.isFinite(value)) {
+            return `<c r="${reference}"${style}><v>${value}</v></c>`;
+          }
+
+          return `<c r="${reference}" t="inlineStr"${style}><is><t xml:space="preserve">${escapeXml(value ?? "")}</t></is></c>`;
+        })
+        .join("");
+      return `<row r="${rowIndex + 1}">${cells}</row>`;
+    })
+    .join("");
+  const lastColumn = getExcelColumnName(Math.max(headers.length - 1, 0));
+  const sheetXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><dimension ref="A1:${lastColumn}${Math.max(values.length, 1)}"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="15"/><cols>${headers
+    .map((header, index) => `<col min="${index + 1}" max="${index + 1}" width="${Math.min(Math.max(String(header).length + 2, 12), 35)}" customWidth="1"/>`)
+    .join("")}</cols><sheetData>${sheetRows}</sheetData><autoFilter ref="A1:${lastColumn}${Math.max(values.length, 1)}"/></worksheet>`;
+
+  const files = [
+    {
+      name: "[Content_Types].xml",
+      data: encoder.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'),
+    },
+    {
+      name: "_rels/.rels",
+      data: encoder.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'),
+    },
+    {
+      name: "xl/workbook.xml",
+      data: encoder.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Soumissions" sheetId="1" r:id="rId1"/></sheets></workbook>'),
+    },
+    {
+      name: "xl/_rels/workbook.xml.rels",
+      data: encoder.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'),
+    },
+    {
+      name: "xl/styles.xml",
+      data: encoder.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF24478B"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs></styleSheet>'),
+    },
+    { name: "xl/worksheets/sheet1.xml", data: encoder.encode(sheetXml) },
+  ];
+
+  return createZipArchive(files);
+}
+
 function canPreviewDocument(document) {
   return (
     document?.mime_type?.startsWith("image/") ||
@@ -344,6 +426,7 @@ export default function AdminSubmissionsPage() {
     error: "",
   });
   const [zipDownloading, setZipDownloading] = useState(false);
+  const [excelDownloading, setExcelDownloading] = useState(false);
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -506,6 +589,88 @@ export default function AdminSubmissionsPage() {
     }
   }
 
+  async function exportSubmissionsToExcel() {
+    if (filteredSubmissions.length === 0 || excelDownloading) return;
+
+    setExcelDownloading(true);
+
+    try {
+      const submissionIds = filteredSubmissions.map((submission) => submission.id);
+      const { data: exportedDocuments, error: documentsError } = await supabase
+        .from(intakeDocumentsTable)
+        .select("submission_id, document_type")
+        .in("submission_id", submissionIds);
+
+      if (documentsError) throw documentsError;
+
+      const uploadedBySubmission = new Map();
+      for (const document of exportedDocuments || []) {
+        if (!uploadedBySubmission.has(document.submission_id)) {
+          uploadedBySubmission.set(document.submission_id, new Set());
+        }
+        uploadedBySubmission
+          .get(document.submission_id)
+          .add(document.document_type);
+      }
+
+      const formFieldNames = Array.from(
+        new Set(
+          filteredSubmissions.flatMap((submission) =>
+            Object.keys(submission.payload?.form_data || {})
+          )
+        )
+      ).sort();
+      const repeatFieldNames = Array.from(
+        new Set(
+          filteredSubmissions.flatMap((submission) =>
+            Object.keys(submission.payload?.repeat_data || {})
+          )
+        )
+      ).sort();
+
+      const rows = filteredSubmissions.map((submission) => {
+        const formData = submission.payload?.form_data || {};
+        const repeatData = submission.payload?.repeat_data || {};
+        const uploadedTypes = uploadedBySubmission.get(submission.id) || new Set();
+        const row = {
+          id: submission.id,
+          submitted_at:
+            submission.payload?.submitted_at || submission.created_at || "",
+          status: submission.status || "",
+          type_client: submission.type_client || "",
+          nom_legal: submission.nom_legal || "",
+          courriel: submission.courriel || "",
+          telephone: submission.telephone || "",
+        };
+
+        for (const fieldName of formFieldNames) {
+          const value = formData[fieldName];
+          row[fieldName] = Array.isArray(value) ? value.join(", ") : value ?? "";
+        }
+
+        for (const repeatName of repeatFieldNames) {
+          row[repeatName] = JSON.stringify(repeatData[repeatName] || []);
+        }
+
+        for (const documentType of Object.keys(DOCUMENT_LABELS)) {
+          row[`uploaded_${documentType}`] = uploadedTypes.has(documentType);
+        }
+
+        return row;
+      });
+
+      const date = new Date().toISOString().slice(0, 10);
+      downloadBlob(
+        createExcelWorkbook(rows),
+        `soumissions-${date}.xlsx`
+      );
+    } catch (error) {
+      alert(error.message || "Impossible d’exporter les soumissions.");
+    } finally {
+      setExcelDownloading(false);
+    }
+  }
+
   async function updateStatus(nextStatus) {
     if (!selectedSubmission) return;
 
@@ -559,13 +724,23 @@ export default function AdminSubmissionsPage() {
     <AdminLayout subtitle="Administration des ouvertures de dossiers">
       <main className="mx-auto grid max-w-7xl gap-6 px-6 py-8 lg:grid-cols-[380px_1fr]">
         <aside className="rounded-[22px] border border-ma-separator/60 bg-white p-5 shadow-[0_18px_45px_rgba(36,71,139,0.08)]">
-          <div className="mb-5">
-            <h1 className="text-2xl font-extrabold tracking-[-0.03em]">
-              Soumissions
-            </h1>
-            <p className="mt-1 text-sm text-ma-muted">
-              {filteredSubmissions.length} dossier(s)
-            </p>
+          <div className="mb-5 flex items-start justify-between gap-3">
+            <div>
+              <h1 className="text-2xl font-extrabold tracking-[-0.03em]">
+                Soumissions
+              </h1>
+              <p className="mt-1 text-sm text-ma-muted">
+                {filteredSubmissions.length} dossier(s)
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={exportSubmissionsToExcel}
+              disabled={filteredSubmissions.length === 0 || excelDownloading}
+              className="rounded-[10px] bg-ma-primary px-3 py-2 text-xs font-bold text-white transition hover:bg-ma-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {excelDownloading ? "Export..." : "Excel"}
+            </button>
           </div>
 
           <div className="mb-4 space-y-3">

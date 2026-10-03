@@ -19,5 +19,8 @@
     "tailwindcss": "latest",
     "typescript": "latest",
     "vite": "latest"
+  },
+  "devDependencies": {
+    "supabase": "^2.115.0"
   }
 }

@@ -87,7 +87,7 @@ function Nav() {
               >{link.label}</a>
             )
           ))}
-          <Link to="/nous-rejoindre" style={{ padding: '0.55rem 1.4rem', background: '#1E3A2F', color: '#FAF8F5', fontFamily: "'Inter', sans-serif", fontSize: '0.82rem', fontWeight: 500, letterSpacing: '0.05em', textDecoration: 'none', borderRadius: 2, transition: 'background 0.2s' }}
+          <Link to="/demande-acces" style={{ padding: '0.55rem 1.4rem', background: '#1E3A2F', color: '#FAF8F5', fontFamily: "'Inter', sans-serif", fontSize: '0.82rem', fontWeight: 500, letterSpacing: '0.05em', textDecoration: 'none', borderRadius: 2, transition: 'background 0.2s' }}
             onMouseEnter={e => (e.currentTarget.style.background = '#2A5040')}
             onMouseLeave={e => (e.currentTarget.style.background = '#1E3A2F')}
           >Nous rejoindre</Link>
@@ -125,7 +125,7 @@ function Nav() {
             )
           ))}
           <Link
-            to="/nous-rejoindre"
+            to="/demande-acces"
             onClick={() => setMenuOpen(false)}
             style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.95rem', color: '#1E3A2F', fontWeight: 700, textDecoration: 'none' }}
           >
@@ -185,7 +185,7 @@ function Hero() {
               Comptabilité, fiscalité et conseil stratégique pour les entreprises et particuliers. Un accompagnement personnalisé, des résultats concrets.
             </p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <Link   to="/nous-rejoindre"
+              <Link   to="/demande-acces"
                 style={{ padding: '0.85rem 2rem', background: '#C4A882', color: '#1C1917', fontFamily: "'Inter', sans-serif", fontSize: '0.83rem', fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', textDecoration: 'none', borderRadius: 2, transition: 'background 0.25s, transform 0.25s', display: 'inline-block' }}
                 onMouseEnter={e => { e.currentTarget.style.background = '#D4B892'; e.currentTarget.style.transform = 'translateY(-2px)' }}
                 onMouseLeave={e => { e.currentTarget.style.background = '#C4A882'; e.currentTarget.style.transform = 'none' }}
