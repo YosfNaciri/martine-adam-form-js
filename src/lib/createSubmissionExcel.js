@@ -93,9 +93,14 @@ function columnName(index) {
 }
 
 export function createSubmissionExcel(row) {
+  return createRowsExcel([row]);
+}
+
+export function createRowsExcel(rows) {
+  if (!rows.length) throw new Error("Aucune donnée à exporter.");
   const encoder = new TextEncoder();
-  const headers = Object.keys(row);
-  const values = [headers, headers.map((header) => row[header])];
+  const headers = Array.from(new Set(rows.flatMap((row) => Object.keys(row))));
+  const values = [headers, ...rows.map((row) => headers.map((header) => row[header]))];
   const sheetRows = values.map((valuesRow, rowIndex) => {
     const cells = valuesRow.map((value, columnIndex) => {
       const reference = `${columnName(columnIndex)}${rowIndex + 1}`;
@@ -114,7 +119,7 @@ export function createSubmissionExcel(row) {
   const columns = headers.map((header, index) =>
     `<col min="${index + 1}" max="${index + 1}" width="${Math.min(Math.max(header.length + 2, 12), 35)}" customWidth="1"/>`
   ).join("");
-  const sheet = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><dimension ref="A1:${lastColumn}2"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${columns}</cols><sheetData>${sheetRows}</sheetData><autoFilter ref="A1:${lastColumn}2"/></worksheet>`;
+  const sheet = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><dimension ref="A1:${lastColumn}${values.length}"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${columns}</cols><sheetData>${sheetRows}</sheetData><autoFilter ref="A1:${lastColumn}${values.length}"/></worksheet>`;
 
   const files = [
     ["[Content_Types].xml", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'],

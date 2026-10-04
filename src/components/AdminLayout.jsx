@@ -5,6 +5,7 @@ import { getSupabaseClient } from "../lib/supabaseClient";
 const navItems = [
   { to: "/admin/dashboard", label: "Dashboard", icon: DashboardIcon },
   { to: "/admin/submissions", label: "Soumissions", icon: FilesIcon },
+  { to: "/admin/confirmations", label: "Confirmations", icon: FilesIcon },
   { to: "/admin/logs", label: "Logs d’activité", icon: ActivityIcon },
 ];
 

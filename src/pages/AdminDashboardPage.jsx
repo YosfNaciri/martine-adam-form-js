@@ -156,6 +156,11 @@ export default function AdminDashboardPage() {
           </button>
         </div>
 
+        <Link to="/admin/confirmations" className="mb-6 block rounded-[22px] border border-ma-separator/60 bg-white p-6 shadow-[0_18px_45px_rgba(36,71,139,0.08)] hover:border-ma-primary">
+          <h2 className="text-xl font-extrabold text-ma-primary">Confirmations clients →</h2>
+          <p className="mt-2 text-sm text-ma-muted">Consulter les confirmations pour la prochaine saison et les exporter dans un seul fichier CSV ou Excel.</p>
+        </Link>
+
         {error && (
           <div className="mb-6 rounded-[10px] border border-ma-danger/40 bg-ma-danger/10 px-4 py-3 text-sm font-bold text-ma-danger">
             {error}

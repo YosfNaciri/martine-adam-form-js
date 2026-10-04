@@ -13,6 +13,10 @@ export const intakeDocumentsTable =
 export const intakeFilesBucket =
   import.meta.env.VITE_SUPABASE_INTAKE_BUCKET || "intake-documents";
 
+export const confirmClientTable =
+  import.meta.env.VITE_SUPABASE_CONFIRM_CLIENT_TABLE ||
+  "client_tax_season_confirmations";
+
 let supabaseClient = null;
 
 export function getSupabaseClient() {

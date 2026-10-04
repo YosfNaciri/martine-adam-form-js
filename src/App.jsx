@@ -6,10 +6,12 @@ import ImpotsPage from "./pages/ImpotsPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminSubmissionsPage from "./pages/AdminSubmissionsPage";
+import AdminConfirmationsPage from "./pages/AdminConfirmationsPage";
 import AdminActivityLogsPage from "./pages/AdminActivityLogsPage";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import AccessRequestPage from "./pages/AccessRequestPage";
 import ConfirmationPage from "./pages/ConfirmationPage";
+import ConfirmClientPage, { ConfirmClientSuccessPage } from "./pages/ConfirmClientPage";
 import OuvertureDossierPage from "./pages/OuvertureDossierPage";
 
 export default function App() {
@@ -22,7 +24,10 @@ export default function App() {
       <Route path="/demande-acces" element={<AccessRequestPage />} />
       <Route path="/ouverture-dossier" element={<OuvertureDossierPage />} />
       <Route path="/confirmation" element={<ConfirmationPage />} />
+      <Route path="/confirm-client" element={<ConfirmClientPage />} />
+      <Route path="/confirm-client/confirmation" element={<ConfirmClientSuccessPage />} />
       <Route path="/admin/login" element={<AdminLoginPage />} />
+      <Route path="/admin/confirmations" element={<ProtectedAdminRoute><AdminConfirmationsPage /></ProtectedAdminRoute>} />
 
       <Route
         path="/admin"

@@ -148,7 +148,7 @@ export default function MonDossierPage({
                   <dt className="text-xs font-bold uppercase tracking-wide text-ma-muted">
                     {formatLabel(key)}
                   </dt>
-                  <dd className="mt-1 break-words text-sm font-bold text-ma-text">
+                  <dd className="mt-1 wrap-break-word text-sm font-bold text-ma-text">
                     {formatValue(value)}
                   </dd>
                 </div>
