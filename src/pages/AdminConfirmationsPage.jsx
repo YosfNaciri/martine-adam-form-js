@@ -1,7 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import AdminLayout from "../components/AdminLayout";
 import { confirmClientTable, getSupabaseClient } from "../lib/supabaseClient";
-import { confirmationExportRow, createConfirmationsCsv, loadAllConfirmations } from "../lib/clientConfirmations";
+import {
+  confirmationExportRow,
+  createConfirmationsCsv,
+  declineScopeLabels,
+  documentMethodLabels,
+  formatParticularitiesForDisplay,
+  loadAllConfirmations,
+  particularityLabels,
+  personFullName,
+  prepared2025Labels,
+  relationLabels,
+} from "../lib/clientConfirmations";
 import { createRowsExcel } from "../lib/createSubmissionExcel";
 
 const panel = "rounded-[22px] border border-ma-separator/60 bg-white p-6 shadow-[0_18px_45px_rgba(36,71,139,0.08)]";
@@ -61,7 +72,7 @@ export default function AdminConfirmationsPage() {
 
   const normalize = (value) => String(value ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const filtered = rows.filter((row) => (!season || String(row.tax_season) === season)
-    && normalize(`${row.first_name} ${row.last_name} ${row.email} ${row.phone}`).includes(normalize(search.trim())));
+    && normalize(`${row.respondent_first_name} ${row.respondent_last_name} ${row.email} ${row.phone} ${(row.people || []).map(personFullName).join(" ")}`).includes(normalize(search.trim())));
   const selected = filtered.find((row) => row.id === selectedId) || filtered[0];
   const seasons = [...new Set(rows.map((row) => String(row.tax_season ?? "")).filter(Boolean))].sort().reverse();
 
@@ -101,9 +112,12 @@ export default function AdminConfirmationsPage() {
             {loading ? <p role="status">Chargement des confirmations…</p> : (
               <div className="max-h-[65vh] space-y-3 overflow-y-auto">
                 {filtered.map((row) => <button type="button" key={row.id} onClick={() => setSelectedId(row.id)} aria-pressed={selected?.id === row.id} className={`w-full rounded-2xl border p-4 text-left ${selected?.id === row.id ? "border-ma-primary bg-ma-primary/10" : "border-ma-separator/60 hover:bg-ma-bg"}`}>
-                  <span className="block font-extrabold">{row.first_name} {row.last_name}</span>
-                  <span className="mt-1 block break-all text-xs text-ma-muted">{row.email}</span>
-                  <span className="mt-3 block text-xs text-ma-muted">Saison {row.tax_season} · {new Date(row.created_at).toLocaleDateString("fr-CA")}</span>
+                  <span className="block font-extrabold">{row.respondent_first_name} {row.respondent_last_name}</span>
+                  <span className="mt-1 block break-all text-xs text-ma-muted">{row.no_email ? "Aucun courriel" : row.email}</span>
+                  <span className={`mt-3 inline-flex rounded-full px-2.5 py-1 text-xs font-bold ${row.wants_tax_service ? "bg-ma-primary/10 text-ma-primary" : "bg-ma-danger/10 text-ma-danger"}`}>
+                    {row.wants_tax_service ? "Oui pour 2026" : "Non pour 2026"}
+                  </span>
+                  <span className="mt-3 block text-xs text-ma-muted">Saison {row.tax_season} · {new Date(row.created_at).toLocaleDateString("fr-CA")} · {row.total_people || 0} personne(s)</span>
                 </button>)}
                 {!filtered.length && <p className="rounded-xl bg-ma-bg p-5 text-sm text-ma-muted">{rows.length ? "Aucune confirmation ne correspond aux filtres." : "Aucune confirmation reçue pour le moment."}</p>}
               </div>
@@ -111,13 +125,69 @@ export default function AdminConfirmationsPage() {
           </aside>
           <section className={panel}>
             {!loading && selected ? <>
-              <h2 className="text-2xl font-extrabold">{selected.first_name} {selected.last_name}</h2>
+              <h2 className="text-2xl font-extrabold">{selected.respondent_first_name} {selected.respondent_last_name}</h2>
               <p className="mt-2 text-sm text-ma-muted">Confirmation du {new Date(selected.created_at).toLocaleString("fr-CA")}</p>
-              <dl className="mt-6 grid gap-4 sm:grid-cols-2">{Object.entries(confirmationExportRow(selected)).filter(([key]) => !["Identifiant", "Date de confirmation"].includes(key)).map(([label, value]) => <div key={label} className="rounded-xl bg-ma-bg p-4"><dt className="text-xs font-bold text-ma-muted">{label}</dt><dd className="mt-2 whitespace-pre-wrap break-words text-sm font-bold">{value === "" || value == null ? "—" : value}</dd></div>)}</dl>
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                <Info label="Prise en charge 2026" value={selected.wants_tax_service ? "Oui" : "Non"} />
+                {!selected.wants_tax_service && <Info label="Portée du refus" value={declineScopeLabels[selected.decline_scope] || selected.decline_scope} />}
+                <Info label="Saison fiscale" value={selected.tax_season} />
+                <Info label="Téléphone" value={selected.phone} />
+                <Info label="Courriel" value={selected.no_email ? "Aucun courriel" : selected.email} />
+                <Info label="Nombre total de personnes" value={selected.total_people} />
+                <Info label="Anciens clients 2025" value={selected.old_clients_count} />
+                <Info label="Ajouts / à vérifier" value={selected.to_validate_count} />
+                <Info label="Dossier de couple" value={selected.is_couple ? "Oui" : "Non"} />
+                <Info label="Enfants" value={selected.has_children ? `${selected.children_count || 0}` : "Non"} />
+                <Info label="Identification NAS appartient à" value={selected.identification_person_name} />
+                <Info label="NAS (3 derniers chiffres)" value={selected.sin_last_three == null ? "" : String(selected.sin_last_three).padStart(3, "0")} />
+                <Info label="Remise des documents" value={documentMethodLabels[selected.document_method] || selected.document_method} />
+                <Info label="Précision remise" value={selected.document_method_note} />
+              </div>
+
+              <section className="mt-6 rounded-2xl bg-ma-bg p-5">
+                <h3 className="text-lg font-extrabold text-ma-primary">Personnes concernées</h3>
+                <div className="mt-4 space-y-3">
+                  {(selected.people || []).map((person, index) => (
+                    <div key={`${person.id}-${index}`} className="rounded-xl bg-white p-4">
+                      <p className="font-extrabold">{personFullName(person)}</p>
+                      <p className="mt-1 text-sm text-ma-muted">{relationLabels[person.relation] || person.relation} · Impôts 2025 : {prepared2025Labels[person.prepared_2025] || person.prepared_2025 || "Non répondu"}</p>
+                      <p className="mt-2 text-sm">
+                        {person.sin_unknown ? "NAS inconnu" : person.sin_last_three ? `NAS ***${person.sin_last_three}` : "NAS non fourni"}
+                        {person.contact ? ` · Coordonnées : ${person.contact}` : ""}
+                      </p>
+                    </div>
+                  ))}
+                  {!(selected.people || []).length && <p className="text-sm text-ma-muted">Aucune personne enregistrée.</p>}
+                </div>
+              </section>
+
+              <section className="mt-6 rounded-2xl bg-ma-bg p-5">
+                <h3 className="text-lg font-extrabold text-ma-primary">Particularités 2026</h3>
+                {selected.particularities?.length ? (
+                  <div className="mt-4 space-y-3">
+                    {selected.particularities.map((item, index) => (
+                      <div key={`${item.type}-${index}`} className="rounded-xl bg-white p-4">
+                        <p className="font-extrabold">{particularityLabels[item.type] || item.type}</p>
+                        {item.person_name && <p className="mt-1 text-sm text-ma-muted">Personne concernée : {item.person_name}</p>}
+                        {item.note && <p className="mt-2 text-sm">{item.note}</p>}
+                      </div>
+                    ))}
+                  </div>
+                ) : <p className="mt-3 text-sm text-ma-muted">{formatParticularitiesForDisplay(selected.particularities) || "Aucune particularité indiquée."}</p>}
+              </section>
             </> : <p className="rounded-xl bg-ma-bg p-6 text-sm text-ma-muted">{loading ? "Chargement…" : "Sélectionnez une confirmation pour consulter les renseignements."}</p>}
           </section>
         </div>
       </main>
     </AdminLayout>
+  );
+}
+
+function Info({ label, value }) {
+  return (
+    <div className="rounded-xl bg-ma-bg p-4">
+      <dt className="text-xs font-bold text-ma-muted">{label}</dt>
+      <dd className="mt-2 whitespace-pre-wrap break-words text-sm font-bold">{value === "" || value == null ? "—" : value}</dd>
+    </div>
   );
 }

@@ -169,7 +169,6 @@ const TYPE_CLIENT_LABELS = {
   succession: "Succession",
 };
 const DOCUMENT_FIELDS = [
-  "piece_identite",
   "lettre_mission",
   "certificat_deces",
   "lettres_patentes",
@@ -380,7 +379,6 @@ export default function IntakePage({
   };
   const isFileField = (id) =>
     [
-      "piece_identite",
       "lettre_mission",
       "certificat_deces",
       "lettres_patentes",
@@ -394,34 +392,11 @@ export default function IntakePage({
         "nom_legal",
         "telephone",
         "courriel",
-        "langue",
-        "piece_identite",
-        "date_ouverture",
       );
-      if (type && type !== "particulier") req.push("contact_principal");
     }
     if (stepIdx === 1) {
-      if (type === "particulier" || type === "travailleur_autonome") {
-        req.push("nas", "date_naissance", "etat_civil");
-        if (type === "travailleur_autonome")
-          req.push("activite_nature", "activite_date_debut", "inscrit_taxes");
-      }
-      if (type === "societe")
-        req.push("ne_federal", "neq_societe", "fin_exercice");
-      if (type === "osbl")
-        req.push("lettres_patentes", "neq_osbl", "osbl_activites");
-      if (type === "succession")
-        req.push("certificat_deces", "date_deces", "nas_defunt");
+      if (type === "societe") req.push("neq_societe");
     }
-    if (stepIdx === 3)
-      req.push(
-        "autorisation_arc",
-        "procuration_mr69",
-        "lettre_mission",
-        "consentement",
-        "verif_identite",
-      );
-    if (stepIdx === 4) req.push("services_demandes", "frequence");
     return req;
   };
   const getErrorsForStep = (stepIdx) => {
@@ -444,6 +419,7 @@ export default function IntakePage({
       stepIdx === 0 &&
       (!data.adresse_civique_rue ||
         !data.adresse_civique_ville ||
+        !data.adresse_civique_province ||
         !data.adresse_civique_cp)
     ) {
       nextErrors.adresse_civique = true;
@@ -1229,7 +1205,6 @@ function Step1({ data, files, errors, setValue, setFile }) {
         <TextField
           id="contact_principal"
           label="Personne-ressource principale"
-          required
           placeholder="Nom de la personne à contacter"
           data={data}
           errors={errors}
@@ -1240,7 +1215,6 @@ function Step1({ data, files, errors, setValue, setFile }) {
         <SelectField
           id="langue"
           label="Langue de correspondance"
-          required
           list={L_LANGUE}
           data={data}
           errors={errors}
@@ -1255,19 +1229,9 @@ function Step1({ data, files, errors, setValue, setFile }) {
           setValue={setValue}
         />
       </div>
-      <UploadField
-        id="piece_identite"
-        label="Pièce d’identité"
-        required
-        spec="PDF, JPG ou PNG — 10 Mo max"
-        files={files}
-        errors={errors}
-        setFile={setFile}
-      />
       <TextField
         id="date_ouverture"
         label="Date d’ouverture du dossier"
-        required
         type="date"
         data={data}
         errors={errors}
@@ -1303,20 +1267,20 @@ function Step2(props) {
       {isPerson && (
         <>
           <Section title="Renseignements personnels">
-            <TextField
-              id="nas"
-              label="NAS"
-              required
-              placeholder="000 000 000"
-              note="Numéro à 9 chiffres — donnée chiffrée au repos."
-              data={data}
-              errors={errors}
-              setValue={setValue}
-            />
+            {type === "travailleur_autonome" && (
+              <TextField
+                id="nas"
+                label="NAS"
+                placeholder="000 000 000"
+                note="Numéro à 9 chiffres — donnée chiffrée au repos."
+                data={data}
+                errors={errors}
+                setValue={setValue}
+              />
+            )}
             <TextField
               id="date_naissance"
               label="Date de naissance"
-              required
               type="date"
               data={data}
               errors={errors}
@@ -1325,7 +1289,6 @@ function Step2(props) {
             <SelectField
               id="etat_civil"
               label="État civil"
-              required
               list={L_ETAT_CIVIL}
               data={data}
               errors={errors}
@@ -1361,15 +1324,6 @@ function Step2(props) {
               </div>
             )}
           </Section>
-          <Section title="Personnes à charge">
-            <RepeatBlock
-              repeatKey="personnes_charge"
-              rows={repeats.personnes_charge}
-              addRepeatRow={addRepeatRow}
-              removeRepeatRow={removeRepeatRow}
-              updateRepeatRow={updateRepeatRow}
-            />
-          </Section>
         </>
       )}
       {type === "travailleur_autonome" && (
@@ -1377,7 +1331,6 @@ function Step2(props) {
           <TextAreaField
             id="activite_nature"
             label="Nature de l’activité autonome"
-            required
             note="Max. 500 caractères"
             maxLength={500}
             data={data}
@@ -1387,7 +1340,6 @@ function Step2(props) {
           <TextField
             id="activite_date_debut"
             label="Date de début des activités"
-            required
             type="date"
             data={data}
             errors={errors}
@@ -1404,7 +1356,6 @@ function Step2(props) {
           <PillGroup
             id="inscrit_taxes"
             label="Inscrit aux TPS/TVQ"
-            required
             list={L_OUI_NON}
             data={data}
             errors={errors}
@@ -1429,7 +1380,6 @@ function Step2(props) {
               <TextField
                 id="ne_federal"
                 label="Numéro d’entreprise fédéral, NE"
-                required
                 placeholder="9 chiffres"
                 data={data}
                 errors={errors}
@@ -1474,7 +1424,6 @@ function Step2(props) {
               <TextField
                 id="fin_exercice"
                 label="Date de fin d’exercice"
-                required
                 placeholder="MM-JJ"
                 data={data}
                 errors={errors}
@@ -1556,7 +1505,6 @@ function Step2(props) {
             <UploadField
               id="lettres_patentes"
               label="Lettres patentes / constitution"
-              required
               spec="PDF — 10 Mo max"
               files={files}
               errors={errors}
@@ -1574,7 +1522,6 @@ function Step2(props) {
               <TextField
                 id="neq_osbl"
                 label="NEQ"
-                required
                 placeholder="10 chiffres"
                 data={data}
                 errors={errors}
@@ -1603,7 +1550,6 @@ function Step2(props) {
             <TextAreaField
               id="osbl_activites"
               label="Nature des activités"
-              required
               note="Max. 500 caractères"
               maxLength={500}
               data={data}
@@ -1636,7 +1582,6 @@ function Step2(props) {
             <UploadField
               id="certificat_deces"
               label="Certificat de décès"
-              required
               spec="PDF — 10 Mo max"
               files={files}
               errors={errors}
@@ -1645,7 +1590,6 @@ function Step2(props) {
             <TextField
               id="date_deces"
               label="Date de décès"
-              required
               type="date"
               data={data}
               errors={errors}
@@ -1655,7 +1599,6 @@ function Step2(props) {
               <TextField
                 id="nas_defunt"
                 label="NAS du défunt"
-                required
                 placeholder="000 000 000"
                 note="Donnée chiffrée au repos."
                 data={data}
@@ -1811,7 +1754,6 @@ function Step4({ data, files, errors, setValue, setFile }) {
         <SelectField
           id="autorisation_arc"
           label="Autorisation ARC, Représenter un client"
-          required
           list={L_STATUT_AUTORISATION}
           data={data}
           errors={errors}
@@ -1820,7 +1762,6 @@ function Step4({ data, files, errors, setValue, setFile }) {
         <SelectField
           id="procuration_mr69"
           label="Procuration Revenu Québec, MR-69"
-          required
           list={L_STATUT_AUTORISATION}
           note="Joindre le MR-69 signé si déjà complété."
           data={data}
@@ -1852,7 +1793,6 @@ function Step4({ data, files, errors, setValue, setFile }) {
         <UploadField
           id="lettre_mission"
           label="Lettre de mission signée"
-          required
           spec="PDF — 10 Mo max"
           files={files}
           errors={errors}
@@ -1861,7 +1801,6 @@ function Step4({ data, files, errors, setValue, setFile }) {
         <CheckboxField
           id="consentement"
           label="Je consens à la collecte de mes renseignements personnels conformément à la politique de confidentialité du cabinet."
-          required
           data={data}
           errors={errors}
           setValue={setValue}
@@ -1869,7 +1808,6 @@ function Step4({ data, files, errors, setValue, setFile }) {
         <CheckboxField
           id="verif_identite"
           label="Je confirme que la vérification d’identité a été complétée."
-          required
           data={data}
           errors={errors}
           setValue={setValue}
@@ -1884,7 +1822,6 @@ function Step5({ data, errors, setValue }) {
       <PillGroup
         id="services_demandes"
         label="Services demandés"
-        required
         list={L_SERVICES}
         multi
         data={data}
@@ -1894,7 +1831,6 @@ function Step5({ data, errors, setValue }) {
       <SelectField
         id="frequence"
         label="Fréquence souhaitée"
-        required
         list={L_FREQUENCE}
         data={data}
         errors={errors}
@@ -1992,10 +1928,6 @@ function Step6({ data, files }) {
         <SummaryRow label="Téléphone" value={data.telephone || "—"} />
         <SummaryRow label="Services demandés" value={services} />
         <SummaryRow label="Fréquence souhaitée" value={frequence} />
-        <SummaryRow
-          label="Pièce d’identité"
-          value={files.piece_identite?.name || "Non téléversée"}
-        />
         <SummaryRow
           label="Lettre de mission"
           value={files.lettre_mission?.name || "Non téléversée"}
