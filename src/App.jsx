@@ -13,6 +13,8 @@ import AccessRequestPage from "./pages/AccessRequestPage";
 import ConfirmationPage from "./pages/ConfirmationPage";
 import ConfirmClientPage, { ConfirmClientSuccessPage } from "./pages/ConfirmClientPage";
 import OuvertureDossierPage from "./pages/OuvertureDossierPage";
+import TestFormPage from "./pages/TestFormPage";
+import TestForm2Page from "./pages/TestForm2Page";
 
 export default function App() {
   return (
@@ -26,6 +28,9 @@ export default function App() {
       <Route path="/confirmation" element={<ConfirmationPage />} />
       <Route path="/confirm-client" element={<ConfirmClientPage />} />
       <Route path="/confirm-client/confirmation" element={<ConfirmClientSuccessPage />} />
+      <Route path="/test-form" element={<TestFormPage />} />
+      <Route path="/test-fom-2" element={<TestForm2Page />} />
+      <Route path="/test-form-2" element={<TestForm2Page />} />
       <Route path="/admin/login" element={<AdminLoginPage />} />
       <Route path="/admin/confirmations" element={<ProtectedAdminRoute><AdminConfirmationsPage /></ProtectedAdminRoute>} />
 
