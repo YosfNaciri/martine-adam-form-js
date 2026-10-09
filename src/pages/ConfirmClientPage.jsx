@@ -83,7 +83,7 @@ function emptyPerson(id, relation = "child") {
   };
 }
 
-function PersonCard({ person, index, respondent, onChange, onRemove, canRemove }) {
+function PersonCard({ person, index, respondent, onChange, onRemove, canRemove, allowSelf }) {
   const isRespondent = person.relation === "self";
   const canSkipSin = person.relation === "child" || person.relation === "parent";
 
@@ -120,7 +120,7 @@ function PersonCard({ person, index, respondent, onChange, onRemove, canRemove }
         <div>
           <label htmlFor={`person-${person.id}-relation`} className="block text-sm font-bold">Relation *</label>
           <select id={`person-${person.id}-relation`} value={person.relation} disabled={isRespondent} required onChange={(event) => onChange({ relation: event.target.value, sinUnknown: false })} className={inputClass}>
-            <option value="self">Moi-même</option>
+            <option value="self" disabled={!allowSelf}>Moi-même</option>
             <option value="spouse">Conjoint ou conjointe</option>
             <option value="child">Enfant</option>
             <option value="parent">Parent</option>
@@ -385,6 +385,7 @@ export default function ConfirmClientPage() {
                 onChange={(patch) => updatePerson(person.id, patch)}
                 onRemove={() => removePerson(person.id)}
                 canRemove={person.relation !== "self"}
+                allowSelf={person.relation === "self"}
               />
             ))}
             {(wantsService === "yes" || declineScope === "all") && (
